@@ -50,48 +50,32 @@ void main(void)
 {
     // initialize the device
     SYSTEM_Initialize();
-
-    // When using interrupts, you need to set the Global and Peripheral Interrupt Enable bits
-    // Use the following macros to:
-
-    // Enable the Global Interrupts
-    //INTERRUPT_GlobalInterruptEnable();
-
-    // Enable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptEnable();
-
-    // Disable the Global Interrupts
-    //INTERRUPT_GlobalInterruptDisable();
-
-    // Disable the Peripheral Interrupts
-    //INTERRUPT_PeripheralInterruptDisable();
-
     
     unsigned char red;
     unsigned char green;
     unsigned char blue;
-    unsigned char redWidth;
-    unsigned char greenWidth;
-    unsigned char blueWidth;
+    unsigned char redValue;
+    unsigned char greenValue;
+    unsigned char blueValue;
     unsigned short i, j;
-    const unsigned char max = 255;
-    const unsigned char min = 0;
+    const unsigned char maxValue = 255;
+    const unsigned char minValue = 0;
     const unsigned short time = 400;
     const unsigned char size = 72;
     const unsigned char step = size / 6;
-    unsigned char width[72];
+    unsigned char values[72];
     
     for (i = 0; i < step * 2; i++) {
-        width[i] = max;
+        values[i] = maxValue;
     }
     for (i = step * 2; i < step * 3; i++) {
-        width[i] = (step * 3 - i) * (max - min) / step + min;
+        values[i] = (step * 3 - i) * (maxValue - minValue) / step + minValue;
     }
     for (i = step * 3; i < step * 5; i++) {
-        width[i] = min;
+        values[i] = minValue;
     }
     for (i = step * 5; i < step * 6; i++) {
-        width[i] = (i - step * 5) * (max - min) / step + min;
+        values[i] = (i - step * 5) * (maxValue - minValue) / step + minValue;
     }
     
     red = 0;
@@ -99,15 +83,15 @@ void main(void)
     blue = 255 / 3 * 2;
     i = step;
     while(1) {
-        redWidth = width[i%size];
-        greenWidth = width[(i+step*4)%size];
-        blueWidth = width[(i+step*2)%size];
+        redValue = values[i%size];
+        greenValue = values[(i+step*4)%size];
+        blueValue = values[(i+step*2)%size];
         for (j = 0; j < time; j++) {
-            if (red < redWidth) RED_LED_LAT = 1;
+            if (red < redValue) RED_LED_LAT = 1;
             else RED_LED_LAT = 0;
-            if (green < greenWidth) GREEN_LED_LAT = 1;
+            if (green < greenValue) GREEN_LED_LAT = 1;
             else GREEN_LED_LAT = 0;
-            if (blue < blueWidth) BLUE_LED_LAT = 1;
+            if (blue < blueValue) BLUE_LED_LAT = 1;
             else BLUE_LED_LAT = 0;
             red += 60;
             green += 60;
