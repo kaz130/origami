@@ -66,9 +66,69 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
 
-    while (1)
-    {
-        // Add your application code
+    unsigned short max = 255;
+    unsigned short min = 0;
+    unsigned char red;
+    unsigned char green;
+    unsigned char blue;
+    unsigned short hue = 0;
+    int count = 0;
+    int i;
+    long time = 255*10;
+    unsigned char redWidth;
+    unsigned char greenWidth;
+    unsigned char blueWidth;
+
+    while(1) {
+        for (hue = 0; hue < 360; hue += 16) {
+            switch (hue / 60) {
+                case 0:
+                    redWidth = max;
+                    greenWidth = hue * (max - min) / 60 + min;
+                    blueWidth = min;
+                    break;
+                case 1:
+                    redWidth = (120 - hue) * (max - min) / 60 + min;
+                    greenWidth = max;
+                    blueWidth = min;
+                    break;
+                case 2:
+                    redWidth = min;
+                    greenWidth = max;
+                    blueWidth = (hue - 120) * (max - min) / 60 + min;
+                    break;
+                case 3:
+                    redWidth = min;
+                    greenWidth = (240 - hue) * (max - min) / 60 + min;
+                    blueWidth = max;
+                    break;
+                case 4:
+                    redWidth = (hue - 240) * (max - min) / 60 + min;
+                    greenWidth = min;
+                    blueWidth = max;
+                    break;
+                case 5:
+                    redWidth = max;
+                    greenWidth = min;
+                    blueWidth = (360 - hue) * (max - min) / 60 + min;
+            }
+
+            red = 0;
+            green = 255 / 3;
+            blue = 255 / 3 * 2;
+            for (i = 0; i < time; i++) {
+                if (red > redWidth) RED_LED_LAT = 0;
+                if (green > greenWidth) GREEN_LED_LAT = 0;
+                if (blue > blueWidth) BLUE_LED_LAT = 0;
+                if (red <= 8) RED_LED_LAT = 1;
+                if (green <= 8) GREEN_LED_LAT = 1;
+                if (blue <= 8) BLUE_LED_LAT = 1;
+                red += 8;
+                green += 8;
+                blue += 8;
+                __delay_us(1);
+            }
+        }
     }
 }
 /**
