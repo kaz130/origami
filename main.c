@@ -66,41 +66,42 @@ void main(void)
     // Disable the Peripheral Interrupts
     //INTERRUPT_PeripheralInterruptDisable();
 
-    unsigned short max = 255;
-    unsigned short min = 0;
+    
     unsigned char red;
     unsigned char green;
     unsigned char blue;
-    unsigned short hue = 0;
-    int count = 0;
-    int i, j;
-    long time = 400;
     unsigned char redWidth;
     unsigned char greenWidth;
     unsigned char blueWidth;
-    unsigned char width[36];
+    unsigned short i, j;
+    const unsigned char max = 255;
+    const unsigned char min = 0;
+    const unsigned short time = 400;
+    const unsigned char size = 72;
+    const unsigned char step = size / 6;
+    unsigned char width[72];
     
-    for (i = 0; i < 12; i++) {
+    for (i = 0; i < step * 2; i++) {
         width[i] = max;
     }
-    for (i = 12; i < 18; i++) {
-        width[i] = (18 - i) * 255 / 6 + min;
+    for (i = step * 2; i < step * 3; i++) {
+        width[i] = (step * 3 - i) * (max - min) / step + min;
     }
-    for (i = 18; i < 30; i++) {
+    for (i = step * 3; i < step * 5; i++) {
         width[i] = min;
     }
-    for (i = 30; i < 36; i++) {
-        width[i] = (i - 30) * 255 / 6 + min;
+    for (i = step * 5; i < step * 6; i++) {
+        width[i] = (i - step * 5) * (max - min) / step + min;
     }
-
+    
     red = 0;
     green = 255 / 3;
     blue = 255 / 3 * 2;
-    i = 6;
+    i = step;
     while(1) {
-        redWidth = width[i%36];
-        greenWidth = width[(i+24)%36];
-        blueWidth = width[(i+12)%36];
+        redWidth = width[i%size];
+        greenWidth = width[(i+step*4)%size];
+        blueWidth = width[(i+step*2)%size];
         for (j = 0; j < time; j++) {
             if (red < redWidth) RED_LED_LAT = 1;
             else RED_LED_LAT = 0;
@@ -108,13 +109,12 @@ void main(void)
             else GREEN_LED_LAT = 0;
             if (blue < blueWidth) BLUE_LED_LAT = 1;
             else BLUE_LED_LAT = 0;
-            red += 100;
-            green += 100;
-            blue += 100;
+            red += 60;
+            green += 60;
+            blue += 60;
             __delay_us(1);
         }
-        if (i < 36) i++;
-        else i = 0;
+        i = (i+1) % size;
     }
 }
 /**
