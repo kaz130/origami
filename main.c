@@ -74,13 +74,16 @@ void main(void)
     unsigned short hue = 0;
     int count = 0;
     int i;
-    long time = 255*10;
+    long time = 400;
     unsigned char redWidth;
     unsigned char greenWidth;
     unsigned char blueWidth;
 
+    red = 0;
+    green = 255 / 3;
+    blue = 255 / 3 * 2;
     while(1) {
-        for (hue = 0; hue < 360; hue += 16) {
+        for (hue = 0; hue < 360; hue += 12) {
             switch (hue / 60) {
                 case 0:
                     redWidth = max;
@@ -113,19 +116,16 @@ void main(void)
                     blueWidth = (360 - hue) * (max - min) / 60 + min;
             }
 
-            red = 0;
-            green = 255 / 3;
-            blue = 255 / 3 * 2;
             for (i = 0; i < time; i++) {
-                if (red > redWidth) RED_LED_LAT = 0;
-                if (green > greenWidth) GREEN_LED_LAT = 0;
-                if (blue > blueWidth) BLUE_LED_LAT = 0;
-                if (red <= 8) RED_LED_LAT = 1;
-                if (green <= 8) GREEN_LED_LAT = 1;
-                if (blue <= 8) BLUE_LED_LAT = 1;
-                red += 8;
-                green += 8;
-                blue += 8;
+                if (red < redWidth) RED_LED_LAT = 1;
+                else RED_LED_LAT = 0;
+                if (green < greenWidth) GREEN_LED_LAT = 1;
+                else GREEN_LED_LAT = 0;
+                if (blue < blueWidth) BLUE_LED_LAT = 1;
+                else BLUE_LED_LAT = 0;
+                red += 100;
+                green += 100;
+                blue += 100;
                 __delay_us(1);
             }
         }
