@@ -73,62 +73,48 @@ void main(void)
     unsigned char blue;
     unsigned short hue = 0;
     int count = 0;
-    int i;
+    int i, j;
     long time = 400;
     unsigned char redWidth;
     unsigned char greenWidth;
     unsigned char blueWidth;
+    unsigned char width[36];
+    
+    for (i = 0; i < 12; i++) {
+        width[i] = max;
+    }
+    for (i = 12; i < 18; i++) {
+        width[i] = (18 - i) * 255 / 6 + min;
+    }
+    for (i = 18; i < 30; i++) {
+        width[i] = min;
+    }
+    for (i = 30; i < 36; i++) {
+        width[i] = (i - 30) * 255 / 6 + min;
+    }
 
     red = 0;
     green = 255 / 3;
     blue = 255 / 3 * 2;
+    i = 6;
     while(1) {
-        for (hue = 0; hue < 360; hue += 12) {
-            switch (hue / 60) {
-                case 0:
-                    redWidth = max;
-                    greenWidth = hue * (max - min) / 60 + min;
-                    blueWidth = min;
-                    break;
-                case 1:
-                    redWidth = (120 - hue) * (max - min) / 60 + min;
-                    greenWidth = max;
-                    blueWidth = min;
-                    break;
-                case 2:
-                    redWidth = min;
-                    greenWidth = max;
-                    blueWidth = (hue - 120) * (max - min) / 60 + min;
-                    break;
-                case 3:
-                    redWidth = min;
-                    greenWidth = (240 - hue) * (max - min) / 60 + min;
-                    blueWidth = max;
-                    break;
-                case 4:
-                    redWidth = (hue - 240) * (max - min) / 60 + min;
-                    greenWidth = min;
-                    blueWidth = max;
-                    break;
-                case 5:
-                    redWidth = max;
-                    greenWidth = min;
-                    blueWidth = (360 - hue) * (max - min) / 60 + min;
-            }
-
-            for (i = 0; i < time; i++) {
-                if (red < redWidth) RED_LED_LAT = 1;
-                else RED_LED_LAT = 0;
-                if (green < greenWidth) GREEN_LED_LAT = 1;
-                else GREEN_LED_LAT = 0;
-                if (blue < blueWidth) BLUE_LED_LAT = 1;
-                else BLUE_LED_LAT = 0;
-                red += 100;
-                green += 100;
-                blue += 100;
-                __delay_us(1);
-            }
+        redWidth = width[i%36];
+        greenWidth = width[(i+24)%36];
+        blueWidth = width[(i+12)%36];
+        for (j = 0; j < time; j++) {
+            if (red < redWidth) RED_LED_LAT = 1;
+            else RED_LED_LAT = 0;
+            if (green < greenWidth) GREEN_LED_LAT = 1;
+            else GREEN_LED_LAT = 0;
+            if (blue < blueWidth) BLUE_LED_LAT = 1;
+            else BLUE_LED_LAT = 0;
+            red += 100;
+            green += 100;
+            blue += 100;
+            __delay_us(1);
         }
+        if (i < 36) i++;
+        else i = 0;
     }
 }
 /**
